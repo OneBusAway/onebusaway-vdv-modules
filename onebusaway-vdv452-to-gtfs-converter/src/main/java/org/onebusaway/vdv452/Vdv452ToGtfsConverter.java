@@ -19,13 +19,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.vdv452.model.Journey;
-import org.onebusaway.vdv452.model.Line;
-import org.onebusaway.vdv452.model.StopPoint;
 
 public class Vdv452ToGtfsConverter {
 
@@ -57,13 +53,8 @@ public class Vdv452ToGtfsConverter {
 
   private void convert(Vdv452Dao in, GtfsMutableRelationalDao out) {
     Vdv452ToGtfsFactory factory = new Vdv452ToGtfsFactory(in, out);
-    for (StopPoint stopPoint : in.getAllStopPoints()) {
-
-    }
     for (Journey journey : in.getAllJourneys()) {
       factory.getTripForJourney(journey);
     }
-  }
-  
-  
+  }  
 }
