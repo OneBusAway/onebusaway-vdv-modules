@@ -40,7 +40,6 @@ public class Vdv452ToGtfsConverterMain {
   }
 
   public void run(String[] args) {
-
     if (needsHelp(args)) {
       printHelp();
       System.exit(0);
@@ -85,7 +84,7 @@ public class Vdv452ToGtfsConverterMain {
   }
 
   private void printHelp() {
-    System.err.println("usage: in out");
+    System.err.println("usage: [program] path/to/vdv-input path/to/gtfs-output");
   }
 
   private boolean needsHelp(String[] args) {
