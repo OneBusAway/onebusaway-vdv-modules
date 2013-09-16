@@ -8,6 +8,12 @@
   </parent>
   <artifactId>onebusaway-vdv452-to-gtfs-converter-cli</artifactId>
 
+  <properties>
+    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies and 
+      is quite large -->
+    <skip-deploy-onebusaway-vdv452-to-gtfs-converter-cli-jar>false</skip-deploy-onebusaway-vdv452-to-gtfs-converter-cli-jar>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>
@@ -24,4 +30,45 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <finalName>onebusaway-vdv452-to-gtfs-converter-cli</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedClassifierName>withAllDependencies</shadedClassifierName>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.onebusaway.vdv452.Vdv452ToGtfsConverterMain</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>${skip-deploy-onebusaway-vdv452-to-gtfs-converter-cli-jar}</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>oss-distribution</id>
+      <properties>
+        <skip-deploy-onebusaway-vdv452-to-gtfs-converter-cli-jar>true</skip-deploy-onebusaway-vdv452-to-gtfs-converter-cli-jar>
+      </properties>
+    </profile>
+  </profiles>
 </project>
