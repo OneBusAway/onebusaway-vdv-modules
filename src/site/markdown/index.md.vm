@@ -1,0 +1,10 @@
+# OneBusAway VDV Libraries and Tools
+
+This is the primary documentation for all the application modules the make up the primary
+[OneBusAway](http://onebusaway.org) website and application framework. 
+  
+**Current Version:** ${currentVersion}
+
+Details on all releases can be found in the [Release Notes](./release-notes.html).
+
+#set( $H = '#' ) ## When using velocity templating (a .vm file), the ## indicates a Velocity comment, which makes Markdown section headers tricky 
