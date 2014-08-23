@@ -17,6 +17,7 @@ package org.onebusaway.vdv452;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.TimeZone;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
@@ -32,6 +33,8 @@ public class Vdv452ToGtfsConverter {
 
   private File _outputPath;
 
+  private TimeZone _tz = TimeZone.getTimeZone("CET");
+
   public void setInputPath(File inputPath) {
     _inputPath = inputPath;
   }
@@ -40,6 +43,10 @@ public class Vdv452ToGtfsConverter {
     _outputPath = outputPath;
   }
 
+  public void setTimeZone(TimeZone tz) {
+    _tz = tz;
+  }
+  
   public void run() throws IOException {
     Vdv452Reader reader = new Vdv452Reader();
     reader.setInputLocation(_inputPath);
@@ -55,7 +62,7 @@ public class Vdv452ToGtfsConverter {
   }
 
   private void convert(Vdv452Dao in, GtfsMutableRelationalDao out) {
-    Vdv452ToGtfsFactory factory = new Vdv452ToGtfsFactory(in, out);
+    Vdv452ToGtfsFactory factory = new Vdv452ToGtfsFactory(in, out, _tz);
     for (StopPoint stop : in.getAllStopPoints()) {
       factory.getStopForStopPoint(stop);
     }
@@ -68,5 +75,5 @@ public class Vdv452ToGtfsConverter {
     for (Journey journey : in.getAllJourneys()) {
       factory.getTripForJourney(journey);
     }
-  }  
+  }
 }

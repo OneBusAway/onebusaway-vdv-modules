@@ -48,22 +48,23 @@ import org.onebusaway.vdv452.model.WaitTime;
 
 public class Vdv452ToGtfsFactory {
   
-  private final TimeZone tz = TimeZone.getTimeZone("UTC");
-  
   private final CalendarSimplicationLibrary _calendarLibrary = new CalendarSimplicationLibrary();
 
   private final Vdv452Dao _in;
 
   private final GtfsMutableRelationalDao _out;
   
+  private final TimeZone _tz;
+  
   /**
    * The set of service ids for calendar entries that have already been processed.
    */
   private final Set<AgencyAndId> processedCalendars = new HashSet<AgencyAndId>();
 
-  public Vdv452ToGtfsFactory(Vdv452Dao in, GtfsMutableRelationalDao out) {
+  public Vdv452ToGtfsFactory(Vdv452Dao in, GtfsMutableRelationalDao out, TimeZone tz) {
     _in = in;
     _out = out;
+    _tz = tz;
   }
 
   public Trip getTripForJourney(Journey journey) {
@@ -109,7 +110,7 @@ public class Vdv452ToGtfsFactory {
     Set<ServiceDate> serviceDates = new HashSet<ServiceDate>();
     for (Period period : _in.getPeriodsForDayType(dayType)) {
       // Convert the VDV ServiceDate to a GTFS ServiceDate
-      serviceDates.add(new ServiceDate(period.getDate().getAsCalendar(tz)));
+      serviceDates.add(new ServiceDate(period.getDate().getAsCalendar(_tz)));
     }
     ServiceCalendarSummary summary = _calendarLibrary.getSummaryForServiceDates(serviceDates);
     List<Object> newEntities = new ArrayList<Object>();

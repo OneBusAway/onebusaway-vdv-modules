@@ -17,6 +17,7 @@ package org.onebusaway.vdv452;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.TimeZone;
 
 import org.apache.commons.cli.AlreadySelectedException;
 import org.apache.commons.cli.CommandLine;
@@ -29,6 +30,8 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
 public class Vdv452ToGtfsConverterMain {
+  
+  private static final String ARG_TIME_ZONE = "timeZone";
 
   private static CommandLineParser _parser = new PosixParser();
 
@@ -46,6 +49,7 @@ public class Vdv452ToGtfsConverterMain {
     }
 
     try {
+      buildOptions();
       CommandLine cli = _parser.parse(_options, args, true);
       runApplication(cli);
       System.exit(0);
@@ -70,6 +74,10 @@ public class Vdv452ToGtfsConverterMain {
     System.exit(-1);
   }
 
+  private void buildOptions() {
+    _options.addOption(ARG_TIME_ZONE, true, ARG_TIME_ZONE);
+  }
+
   private void runApplication(CommandLine cli) throws IOException {
     String[] args = cli.getArgs();
     if (args.length != 2) {
@@ -80,6 +88,10 @@ public class Vdv452ToGtfsConverterMain {
     Vdv452ToGtfsConverter converter = new Vdv452ToGtfsConverter();
     converter.setInputPath(new File(args[0]));
     converter.setOutputPath(new File(args[1]));
+    
+    if (cli.hasOption(ARG_TIME_ZONE)) {
+      converter.setTimeZone(TimeZone.getTimeZone(cli.getOptionValue(ARG_TIME_ZONE)));
+    }
     converter.run();
   }
 
