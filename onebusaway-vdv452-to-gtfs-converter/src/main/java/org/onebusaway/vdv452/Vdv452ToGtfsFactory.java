@@ -16,7 +16,6 @@
 package org.onebusaway.vdv452;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,20 +135,8 @@ public class Vdv452ToGtfsFactory {
   }
 
   private List<TravelTime> orderTravelTimesForRouteSequence(
-      List<RouteSequence> sequence, List<TravelTime> travelTimes) {
-    if (sequence.size() != travelTimes.size() + 1) {
-      throw new IllegalStateException();
-    }
-    Map<Pair<StopPoint>, TravelTime> travelTimesByStopPair = new HashMap<Pair<StopPoint>, TravelTime>();
-    for (TravelTime travelTime : travelTimes) {
-      Pair<StopPoint> pair = Tuples.pair(travelTime.getFromStop(),
-          travelTime.getToStop());
-      TravelTime existing = travelTimesByStopPair.put(pair, travelTime);
-      if (existing != null) {
-        throw new IllegalStateException();
-      }
-    }
-    List<TravelTime> ordered = new ArrayList<TravelTime>(travelTimes.size());
+      List<RouteSequence> sequence, Map<Pair<StopPoint>, TravelTime> travelTimesByStopPair) {
+    List<TravelTime> ordered = new ArrayList<TravelTime>(sequence.size() - 1);
     for (int i = 0; i + 1 < sequence.size(); ++i) {
       RouteSequence from = sequence.get(i);
       RouteSequence to = sequence.get(i + 1);

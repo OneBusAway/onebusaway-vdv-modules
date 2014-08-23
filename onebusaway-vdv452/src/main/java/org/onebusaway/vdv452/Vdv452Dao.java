@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.onebusaway.collections.MappingLibrary;
+import org.onebusaway.collections.tuple.Pair;
+import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.LineId;
@@ -56,7 +58,7 @@ public class Vdv452Dao {
 
   private List<TravelTime> _travelTimes = new ArrayList<TravelTime>();
 
-  private Map<TimingGroup, List<TravelTime>> _travelTimesByTimingGroup = null;
+  private Map<TimingGroup, Map<Pair<StopPoint>, TravelTime>> _travelTimesByTimingGroup = null;
 
   private List<WaitTime> _waitTimes = new ArrayList<WaitTime>();
 
@@ -94,12 +96,24 @@ public class Vdv452Dao {
     return _timingGroupsById.get(id);
   }
 
-  public List<TravelTime> getTravelTimesForTimingGroup(TimingGroup timingGroup) {
+  public Map<Pair<StopPoint>, TravelTime> getTravelTimesForTimingGroup(TimingGroup timingGroup) {
     if (_travelTimesByTimingGroup == null) {
-      _travelTimesByTimingGroup = MappingLibrary.mapToValueList(_travelTimes,
-          "timingGroup");
+      _travelTimesByTimingGroup = new HashMap<TimingGroup, Map<Pair<StopPoint>,TravelTime>>();
+      for (TravelTime travelTime : _travelTimes) {
+        Map<Pair<StopPoint>, TravelTime> travelTimesByStopPair = _travelTimesByTimingGroup.get(travelTime.getTimingGroup());
+        if (travelTimesByStopPair == null) {
+          travelTimesByStopPair = new HashMap<Pair<StopPoint>, TravelTime>();
+          _travelTimesByTimingGroup.put(travelTime.getTimingGroup(), travelTimesByStopPair);
+        }
+        Pair<StopPoint> pair = Tuples.pair(travelTime.getFromStop(),
+            travelTime.getToStop());
+        TravelTime existing = travelTimesByStopPair.put(pair, travelTime);
+        if (existing != null) {
+          throw new IllegalStateException();
+        }
+      }
     }
-    return list(_travelTimesByTimingGroup.get(timingGroup));
+    return map(_travelTimesByTimingGroup.get(timingGroup));
   }
 
   public List<WaitTime> getWaitTimesForTimingGroup(TimingGroup timingGroup) {
@@ -157,6 +171,13 @@ public class Vdv452Dao {
   private static <T> List<T> list(List<T> values) {
     if (values == null) {
       return Collections.emptyList();
+    }
+    return values;
+  }
+  
+  private static <X, Y> Map<X, Y> map(Map<X, Y> values) {
+    if (values == null) {
+      return Collections.emptyMap();
     }
     return values;
   }
