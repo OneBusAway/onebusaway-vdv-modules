@@ -26,6 +26,7 @@ import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 import org.onebusaway.vdv452.Vdv452Dao;
 import org.onebusaway.vdv452.Vdv452Reader;
+import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.LineId;
@@ -76,7 +77,10 @@ public class EntityFieldMappingFactory implements FieldMappingFactory {
     private Object resolveEntity(CsvEntityContext context,
         Map<String, Object> csvValues) {
       Vdv452Dao dao = (Vdv452Dao) context.get(Vdv452Reader.DAO_CONTEXT_KEY);
-      if (_objFieldType == TimingGroup.class) {
+      if (_objFieldType == DayType.class) {
+        VersionedId id = IdFactory.resolveVersionedId(csvValues, _csvFieldName);
+        return dao.getDayTypeForId(id);
+      } else if (_objFieldType == TimingGroup.class) {
         VersionedId id = IdFactory.resolveVersionedId(csvValues, _csvFieldName);
         return dao.getTimingGroupForId(id);
       } else if (_objFieldType == VehicleType.class) {

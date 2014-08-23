@@ -30,6 +30,7 @@ import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.vdv452.model.BaseVersion;
 import org.onebusaway.vdv452.model.Block;
+import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.JourneyWaitTime;
 import org.onebusaway.vdv452.model.Line;
@@ -64,8 +65,9 @@ public class Vdv452Reader extends CsvEntityReader {
     _entityClasses.add(TransportCompany.class);
     _entityClasses.add(StopPoint.class);
     _entityClasses.add(Stop.class);
+    _entityClasses.add(DayType.class);
     _entityClasses.add(TimingGroup.class);
-    _entityClasses.add(TravelTime.class);
+    _entityClasses.add(TravelTime.class);    
     _entityClasses.add(WaitTime.class);
     _entityClasses.add(Line.class);
     _entityClasses.add(RouteSequence.class);

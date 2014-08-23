@@ -25,6 +25,7 @@ import java.util.Map;
 import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
+import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.LineId;
@@ -42,6 +43,8 @@ import org.onebusaway.vdv452.model.WaitTime;
 public class Vdv452Dao {
   
   private Map<VersionedId, TransportCompany> _transportCompaniesById = new HashMap<VersionedId, TransportCompany>();
+  
+  private Map<VersionedId, DayType> _dayTypesById = new HashMap<VersionedId, DayType>();
 
   private Map<VersionedId, TimingGroup> _timingGroupsById = new HashMap<VersionedId, TimingGroup>();
 
@@ -71,8 +74,10 @@ public class Vdv452Dao {
     if (bean instanceof TransportCompany) {
       TransportCompany company = (TransportCompany) bean;
       _transportCompaniesById.put(company.getId(), company);
-    }
-    else if (bean instanceof TimingGroup) {
+    } else if (bean instanceof DayType) {
+      DayType dayType = (DayType) bean;
+      _dayTypesById.put(dayType.getId(), dayType);
+    } else if (bean instanceof TimingGroup) {
       TimingGroup group = (TimingGroup) bean;
       _timingGroupsById.put(group.getId(), group);
     } else if (bean instanceof VehicleType) {
@@ -105,6 +110,14 @@ public class Vdv452Dao {
   
   public TransportCompany getTransportCompanyForId(VersionedId id) {
     return _transportCompaniesById.get(id);
+  }
+  
+  public Collection<DayType> getAllDayTypes() {
+    return _dayTypesById.values();
+  }
+
+  public DayType getDayTypeForId(VersionedId id) {
+    return _dayTypesById.get(id);
   }
 
   public TimingGroup getTimingGroupForId(VersionedId id) {

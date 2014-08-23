@@ -36,6 +36,9 @@ public class Journey extends IdentityBean<VersionedId> {
 
   @CsvField(name = "FGR_NR", mapping = EntityFieldMappingFactory.class)
   private TimingGroup timingGroup;
+  
+  @CsvField(name = "TAGESART_NR", mapping = EntityFieldMappingFactory.class)
+  private DayType dayType;
 
   @Override
   public VersionedId getId() {
@@ -69,5 +72,13 @@ public class Journey extends IdentityBean<VersionedId> {
 
   public void setTimingGroup(TimingGroup timingGroup) {
     this.timingGroup = timingGroup;
+  }
+
+  public DayType getDayType() {
+    return dayType;
+  }
+
+  public void setDayType(DayType dayType) {
+    this.dayType = dayType;
   }
 }
