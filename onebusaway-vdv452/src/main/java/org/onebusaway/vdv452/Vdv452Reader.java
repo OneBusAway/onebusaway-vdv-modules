@@ -37,6 +37,7 @@ import org.onebusaway.vdv452.model.RouteSequence;
 import org.onebusaway.vdv452.model.Stop;
 import org.onebusaway.vdv452.model.StopPoint;
 import org.onebusaway.vdv452.model.TimingGroup;
+import org.onebusaway.vdv452.model.TransportCompany;
 import org.onebusaway.vdv452.model.TravelTime;
 import org.onebusaway.vdv452.model.VehicleType;
 import org.onebusaway.vdv452.model.WaitTime;
@@ -60,6 +61,7 @@ public class Vdv452Reader extends CsvEntityReader {
     setTrimValues(true);
 
     _entityClasses.add(BaseVersion.class);
+    _entityClasses.add(TransportCompany.class);
     _entityClasses.add(StopPoint.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(TimingGroup.class);

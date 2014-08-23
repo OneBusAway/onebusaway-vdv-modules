@@ -33,12 +33,15 @@ import org.onebusaway.vdv452.model.Stop;
 import org.onebusaway.vdv452.model.StopId;
 import org.onebusaway.vdv452.model.StopPoint;
 import org.onebusaway.vdv452.model.TimingGroup;
+import org.onebusaway.vdv452.model.TransportCompany;
 import org.onebusaway.vdv452.model.TravelTime;
 import org.onebusaway.vdv452.model.VehicleType;
 import org.onebusaway.vdv452.model.VersionedId;
 import org.onebusaway.vdv452.model.WaitTime;
 
 public class Vdv452Dao {
+  
+  private Map<VersionedId, TransportCompany> _transportCompaniesById = new HashMap<VersionedId, TransportCompany>();
 
   private Map<VersionedId, TimingGroup> _timingGroupsById = new HashMap<VersionedId, TimingGroup>();
 
@@ -65,7 +68,11 @@ public class Vdv452Dao {
   private Map<TimingGroup, List<WaitTime>> _waitTimesByTimingGroup = null;
 
   public void putEntity(Object bean) {
-    if (bean instanceof TimingGroup) {
+    if (bean instanceof TransportCompany) {
+      TransportCompany company = (TransportCompany) bean;
+      _transportCompaniesById.put(company.getId(), company);
+    }
+    else if (bean instanceof TimingGroup) {
       TimingGroup group = (TimingGroup) bean;
       _timingGroupsById.put(group.getId(), group);
     } else if (bean instanceof VehicleType) {
@@ -90,6 +97,14 @@ public class Vdv452Dao {
     } else if (bean instanceof WaitTime) {
       _waitTimes.add((WaitTime) bean);
     }
+  }
+  
+  public Collection<TransportCompany> getAllTransportCompanies() {
+    return _transportCompaniesById.values();
+  }
+  
+  public TransportCompany getTransportCompanyForId(VersionedId id) {
+    return _transportCompaniesById.get(id);
   }
 
   public TimingGroup getTimingGroupForId(VersionedId id) {
