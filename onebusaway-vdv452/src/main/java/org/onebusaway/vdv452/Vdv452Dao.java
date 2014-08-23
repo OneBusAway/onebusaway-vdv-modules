@@ -127,7 +127,7 @@ public class Vdv452Dao {
     return _dayTypesById.get(id);
   }
   
-  public List<Period> getPeriodsForDayType(VersionedId dayType) {
+  public List<Period> getPeriodsForDayType(DayType dayType) {
     if (_periodsByDayType == null) {
       _periodsByDayType = MappingLibrary.mapToValueList(_periods, "dayType");
     }

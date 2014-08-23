@@ -16,8 +16,11 @@
 package org.onebusaway.vdv452;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 
 import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.collections.tuple.Pair;
@@ -27,10 +30,15 @@ import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary;
+import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary.ServiceCalendarSummary;
+import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.LineId;
+import org.onebusaway.vdv452.model.Period;
 import org.onebusaway.vdv452.model.RouteSequence;
 import org.onebusaway.vdv452.model.StopId;
 import org.onebusaway.vdv452.model.StopPoint;
@@ -39,10 +47,19 @@ import org.onebusaway.vdv452.model.VersionedId;
 import org.onebusaway.vdv452.model.WaitTime;
 
 public class Vdv452ToGtfsFactory {
+  
+  private final TimeZone tz = TimeZone.getTimeZone("UTC");
+  
+  private final CalendarSimplicationLibrary _calendarLibrary = new CalendarSimplicationLibrary();
 
   private final Vdv452Dao _in;
 
   private final GtfsMutableRelationalDao _out;
+  
+  /**
+   * The set of service ids for calendar entries that have already been processed.
+   */
+  private final Set<AgencyAndId> processedCalendars = new HashSet<AgencyAndId>();
 
   public Vdv452ToGtfsFactory(Vdv452Dao in, GtfsMutableRelationalDao out) {
     _in = in;
@@ -50,6 +67,7 @@ public class Vdv452ToGtfsFactory {
   }
 
   public Trip getTripForJourney(Journey journey) {
+
     VersionedId journeyId = journey.getId();
     AgencyAndId id = new AgencyAndId("1", Long.toString(journeyId.getId()));
     Trip trip = _out.getTripForId(id);
@@ -57,7 +75,7 @@ public class Vdv452ToGtfsFactory {
       trip = new Trip();
       trip.setId(id);
       trip.setRoute(getRouteForLine(journey.getLine()));
-      trip.setServiceId(new AgencyAndId("1", "1"));
+      trip.setServiceId(createCalendarEntriesForDayType(journey.getDayType()));
       getStopTimesForJourney(journey, trip);
       _out.saveEntity(trip);
     }
@@ -81,6 +99,29 @@ public class Vdv452ToGtfsFactory {
       _out.saveEntity(route);
     }
     return route;
+  }
+
+  public AgencyAndId createCalendarEntriesForDayType(DayType dayType) {
+    AgencyAndId serviceId = getServiceIdForDayType(dayType);
+    if (!processedCalendars.add(serviceId)) {
+      return serviceId;
+    }
+    Set<ServiceDate> serviceDates = new HashSet<ServiceDate>();
+    for (Period period : _in.getPeriodsForDayType(dayType)) {
+      // Convert the VDV ServiceDate to a GTFS ServiceDate
+      serviceDates.add(new ServiceDate(period.getDate().getAsCalendar(tz)));
+    }
+    ServiceCalendarSummary summary = _calendarLibrary.getSummaryForServiceDates(serviceDates);
+    List<Object> newEntities = new ArrayList<Object>();
+    _calendarLibrary.computeSimplifiedCalendar(serviceId, summary, newEntities);
+    for (Object entity : newEntities) {
+      _out.saveOrUpdateEntity(entity);
+    }
+    return serviceId;
+  }
+
+  private AgencyAndId getServiceIdForDayType(DayType dayType) {
+    return new AgencyAndId("1", Long.toString(dayType.getId().getId()));
   }
 
   public Stop getStopForStopPoint(StopPoint stopPoint) {
@@ -135,7 +176,8 @@ public class Vdv452ToGtfsFactory {
   }
 
   private List<TravelTime> orderTravelTimesForRouteSequence(
-      List<RouteSequence> sequence, Map<Pair<StopPoint>, TravelTime> travelTimesByStopPair) {
+      List<RouteSequence> sequence,
+      Map<Pair<StopPoint>, TravelTime> travelTimesByStopPair) {
     List<TravelTime> ordered = new ArrayList<TravelTime>(sequence.size() - 1);
     for (int i = 0; i + 1 < sequence.size(); ++i) {
       RouteSequence from = sequence.get(i);
@@ -162,5 +204,4 @@ public class Vdv452ToGtfsFactory {
     }
     return ordered;
   }
-
 }

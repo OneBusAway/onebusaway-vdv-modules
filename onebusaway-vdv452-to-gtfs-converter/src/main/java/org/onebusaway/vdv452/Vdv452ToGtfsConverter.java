@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.StopPoint;
@@ -57,6 +58,9 @@ public class Vdv452ToGtfsConverter {
     Vdv452ToGtfsFactory factory = new Vdv452ToGtfsFactory(in, out);
     for (StopPoint stop : in.getAllStopPoints()) {
       factory.getStopForStopPoint(stop);
+    }
+    for (DayType dayType : in.getAllDayTypes()) {
+      factory.createCalendarEntriesForDayType(dayType);
     }
     for (Line line : in.getAllLines()) {
       factory.getRouteForLine(line);
