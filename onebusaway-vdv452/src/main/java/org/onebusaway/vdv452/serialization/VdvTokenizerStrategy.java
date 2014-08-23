@@ -22,7 +22,7 @@ import org.onebusaway.csv_entities.TokenizerStrategy;
 
 public class VdvTokenizerStrategy implements TokenizerStrategy {
 
-  private final DelimitedTextParser _delimiterLibrary = new DelimitedTextParser(';');
+  private final DelimitedTextParser _delimiterLibrary = createParser();
 
   @Override
   public List<String> parse(String line) {
@@ -33,4 +33,10 @@ public class VdvTokenizerStrategy implements TokenizerStrategy {
   public String format(Iterable<String> tokens) {
     throw new UnsupportedOperationException();
   }
+
+  private static DelimitedTextParser createParser() {
+    DelimitedTextParser parser = new DelimitedTextParser(';');
+    parser.setTrimInitialWhitespace(true);
+    return parser;
+  }  
 }
