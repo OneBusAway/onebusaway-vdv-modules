@@ -26,7 +26,7 @@ public class BaseVersion extends IdentityBean<Integer> {
   @CsvField(name = "BASIS_VERSION")
   private int id;
 
-  @CsvField(name = "BASIS_VERSION_TEXT")
+  @CsvField(name = "BASIS_VERSION_TEXT", optional = true)
   private String desc;
 
   @Override
