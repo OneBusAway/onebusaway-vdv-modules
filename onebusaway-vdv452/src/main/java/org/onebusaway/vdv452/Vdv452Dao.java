@@ -29,6 +29,7 @@ import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.LineId;
+import org.onebusaway.vdv452.model.Period;
 import org.onebusaway.vdv452.model.RouteSequence;
 import org.onebusaway.vdv452.model.Stop;
 import org.onebusaway.vdv452.model.StopId;
@@ -45,6 +46,10 @@ public class Vdv452Dao {
   private Map<VersionedId, TransportCompany> _transportCompaniesById = new HashMap<VersionedId, TransportCompany>();
   
   private Map<VersionedId, DayType> _dayTypesById = new HashMap<VersionedId, DayType>();
+  
+  private List<Period> _periods = new ArrayList<Period>();
+  
+  private Map<DayType, List<Period>> _periodsByDayType = null;
 
   private Map<VersionedId, TimingGroup> _timingGroupsById = new HashMap<VersionedId, TimingGroup>();
 
@@ -77,6 +82,8 @@ public class Vdv452Dao {
     } else if (bean instanceof DayType) {
       DayType dayType = (DayType) bean;
       _dayTypesById.put(dayType.getId(), dayType);
+    } else if (bean instanceof Period) {
+      _periods.add((Period) bean);
     } else if (bean instanceof TimingGroup) {
       TimingGroup group = (TimingGroup) bean;
       _timingGroupsById.put(group.getId(), group);
@@ -118,6 +125,13 @@ public class Vdv452Dao {
 
   public DayType getDayTypeForId(VersionedId id) {
     return _dayTypesById.get(id);
+  }
+  
+  public List<Period> getPeriodsForDayType(VersionedId dayType) {
+    if (_periodsByDayType == null) {
+      _periodsByDayType = MappingLibrary.mapToValueList(_periods, "dayType");
+    }
+    return list(_periodsByDayType.get(dayType));
   }
 
   public TimingGroup getTimingGroupForId(VersionedId id) {
