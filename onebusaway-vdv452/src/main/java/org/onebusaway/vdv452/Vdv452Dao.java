@@ -139,6 +139,10 @@ public class Vdv452Dao {
   public Stop getStopForId(StopId id) {
     return _stopsById.get(id);
   }
+  
+  public Collection<Line> getAllLines() {
+    return _linesById.values();
+  }
 
   public Line getLineForId(LineId id) {
     return _linesById.get(id);
