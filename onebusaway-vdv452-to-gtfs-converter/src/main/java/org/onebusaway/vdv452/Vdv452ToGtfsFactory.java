@@ -64,7 +64,7 @@ public class Vdv452ToGtfsFactory {
     return trip;
   }
 
-  private Route getRouteForLine(Line line) {
+  public Route getRouteForLine(Line line) {
     LineId lineId = line.getId();
     AgencyAndId id = new AgencyAndId("1", Long.toString(lineId.getLineId()));
     Route route = _out.getRouteForId(id);
@@ -83,7 +83,7 @@ public class Vdv452ToGtfsFactory {
     return route;
   }
 
-  private Stop getStopForStopPoint(StopPoint stopPoint) {
+  public Stop getStopForStopPoint(StopPoint stopPoint) {
     StopId stopId = stopPoint.getId();
     AgencyAndId id = new AgencyAndId("1", Long.toString(stopId.getId()));
     Stop gtfsStop = _out.getStopForId(id);
