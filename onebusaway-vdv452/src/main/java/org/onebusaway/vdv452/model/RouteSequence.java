@@ -19,6 +19,10 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.vdv452.serialization.EntityFieldMappingFactory;
 
+/**
+ * Describes a single entry in an ordered sequence of {@link StopPoint}
+ * associated with a {@link Link}.
+ */
 @CsvFields(filename = "LID_VERLAUF.x10")
 public class RouteSequence implements Comparable<RouteSequence> {
 
@@ -58,5 +62,10 @@ public class RouteSequence implements Comparable<RouteSequence> {
   @Override
   public int compareTo(RouteSequence o) {
     return this.sequence - o.sequence;
+  }
+  
+  @Override
+  public String toString() {
+    return sequence + "=" + stop;
   }
 }

@@ -65,4 +65,9 @@ public class TravelTime {
   public void setTravelTime(int travelTime) {
     this.travelTime = travelTime;
   }
+  
+  @Override
+  public String toString() {
+    return timingGroup + ": " + fromStop + " + " + toStop + " = " + travelTime;
+  }
 }
