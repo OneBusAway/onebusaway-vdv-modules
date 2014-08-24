@@ -24,5 +24,5 @@ increase performance.
 
 ### Arguments
 
-* input_vdv_path - path to a zip file or directory containing VDV-452 .x10 files (note the lower-case x in .x10).  For zip files, all files must be in the root of the zip. 
-* output_gtfs_path - path to a zip file or directory where the converted GTFS feed will be written.
+* `input_vdv_path` - path to a zip file or directory containing VDV-452 .x10 files (note the lower-case x in .x10).  For zip files, all files must be in the root of the zip. 
+* `output_gtfs_path` - path to a zip file or directory where the converted GTFS feed will be written.
