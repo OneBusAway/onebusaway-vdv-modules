@@ -175,14 +175,8 @@ public class Vdv452ToGtfsFactory {
         throw new IllegalStateException("unknown stop: " + stopId);
       }
       gtfsStop.setName(vdvStop.getName());
-      gtfsStop.setLat(vdvStop.getLat() / 10000000.0);
-      gtfsStop.setLon(vdvStop.getLng() / 10000000.0);
-      if (vdvStop.getLat() == 0) {
-        double lat = 53.5535290 + Math.random() * 0.001;
-        double lng = 10.0061630 + Math.random() * 0.001;
-        gtfsStop.setLat(lat);
-        gtfsStop.setLon(lng);
-      }
+      gtfsStop.setLat(vdvStop.getLat());
+      gtfsStop.setLon(vdvStop.getLng());
       _out.saveEntity(gtfsStop);
     }
     return gtfsStop;

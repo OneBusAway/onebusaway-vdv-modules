@@ -17,6 +17,7 @@ package org.onebusaway.vdv452.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.vdv452.serialization.DegressMinutesSecondsFieldMappingFactory;
 import org.onebusaway.vdv452.serialization.StopIdFieldMappingFactory;
 
 @CsvFields(filename = "REC_ORT.x10")
@@ -30,11 +31,11 @@ public class Stop extends IdentityBean<StopId> {
   @CsvField(name = "ORT_NAME")
   private String name;
 
-  @CsvField(name = "ORT_POS_BREITE")
-  private long lat;
+  @CsvField(name = "ORT_POS_BREITE", mapping=DegressMinutesSecondsFieldMappingFactory.class)
+  private double lat;
 
-  @CsvField(name = "ORT_POS_LAENGE")
-  private long lng;
+  @CsvField(name = "ORT_POS_LAENGE", mapping=DegressMinutesSecondsFieldMappingFactory.class)
+  private double lng;
 
   @Override
   public StopId getId() {
@@ -54,19 +55,19 @@ public class Stop extends IdentityBean<StopId> {
     this.name = name;
   }
 
-  public long getLat() {
+  public double getLat() {
     return lat;
   }
 
-  public void setLat(long lat) {
+  public void setLat(double lat) {
     this.lat = lat;
   }
 
-  public long getLng() {
+  public double getLng() {
     return lng;
   }
 
-  public void setLng(long lng) {
+  public void setLng(double lng) {
     this.lng = lng;
   }
 }
