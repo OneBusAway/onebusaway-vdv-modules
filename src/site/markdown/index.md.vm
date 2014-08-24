@@ -1,8 +1,7 @@
 # OneBusAway VDV Libraries and Tools
 
-This is the primary documentation for all the application modules the make up the primary
-[OneBusAway](http://onebusaway.org) website and application framework. 
-  
+Libraries and tools for working with transit data conforming to the VDV specification.  
+
 **Current Version:** ${currentVersion}
 
 Details on all releases can be found in the [Release Notes](./release-notes.html).
