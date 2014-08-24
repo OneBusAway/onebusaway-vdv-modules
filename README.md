@@ -16,8 +16,13 @@ The utility is a executable Java jar file, so you'll need Java installed to run 
 
     java -jar onebusaway-vdv452-converter-cli.jar [-args] input_vdv_path output_gtfs_path
 
-*Note*: Converting large GTFS feeds is often processor and memory intensive.
+**Note**: Converting large GTFS feeds is often processor and memory intensive.
 You'll likely need to increase the max amount of memory allocated to Java with
 an option like -Xmx1G (adjust the limit as needed). I also recommend adding the
 -server argument if you are running the Oracle or OpenJDK, as it can really
 increase performance.
+
+### Arguments
+
+* input_vdv_path - path to a zip file or directory containing VDV-452 .x10 files (note the lower-case x in .x10).  For zip files, all files must be in the root of the zip. 
+* output_gtfs_path - path to a zip file or directory where the converted GTFS feed will be written.
