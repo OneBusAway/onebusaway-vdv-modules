@@ -16,6 +16,7 @@
 package org.onebusaway.vdv452;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.TimeZone;
 import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
+import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
@@ -42,26 +44,29 @@ import org.onebusaway.vdv452.model.Period;
 import org.onebusaway.vdv452.model.RouteSequence;
 import org.onebusaway.vdv452.model.StopId;
 import org.onebusaway.vdv452.model.StopPoint;
+import org.onebusaway.vdv452.model.TransportCompany;
 import org.onebusaway.vdv452.model.TravelTime;
 import org.onebusaway.vdv452.model.VersionedId;
 import org.onebusaway.vdv452.model.WaitTime;
 
 public class Vdv452ToGtfsFactory {
-  
+
   private final CalendarSimplicationLibrary _calendarLibrary = new CalendarSimplicationLibrary();
 
   private final Vdv452Dao _in;
 
   private final GtfsMutableRelationalDao _out;
-  
+
   private final TimeZone _tz;
-  
+
   /**
-   * The set of service ids for calendar entries that have already been processed.
+   * The set of service ids for calendar entries that have already been
+   * processed.
    */
   private final Set<AgencyAndId> processedCalendars = new HashSet<AgencyAndId>();
 
-  public Vdv452ToGtfsFactory(Vdv452Dao in, GtfsMutableRelationalDao out, TimeZone tz) {
+  public Vdv452ToGtfsFactory(Vdv452Dao in, GtfsMutableRelationalDao out,
+      TimeZone tz) {
     _in = in;
     _out = out;
     _tz = tz;
@@ -85,11 +90,14 @@ public class Vdv452ToGtfsFactory {
 
   public Route getRouteForLine(Line line) {
     LineId lineId = line.getId();
-    AgencyAndId id = new AgencyAndId("1", Long.toString(lineId.getLineId()));
+    Agency agency = getAgencyForLine(line);
+    AgencyAndId id = new AgencyAndId(agency.getId(),
+        Long.toString(lineId.getLineId()));
     Route route = _out.getRouteForId(id);
     if (route == null) {
       route = new Route();
       route.setId(id);
+      route.setAgency(agency);
       if (line.getShortName() != null && !line.getShortName().isEmpty()) {
         route.setShortName(line.getShortName());
       }
@@ -100,6 +108,36 @@ public class Vdv452ToGtfsFactory {
       _out.saveEntity(route);
     }
     return route;
+  }
+
+  private Agency getAgencyForLine(Line line) {
+    // Right now, I'm not actually clear on how a Line is linked to a
+    // TransportCompany. So for now, if there is more than one, we bail.
+    Collection<TransportCompany> companies = _in.getAllTransportCompanies();
+    if (companies.size() != 1) {
+      throw new IllegalStateException(
+          "If you are reading this, it means you have a VDV 452 feed without "
+              + "exactly one entry in ZUL_VERKEHRSBETRIEB.x10.  I haven't yet "
+              + "implemented support for this scenario but would like to.  Reach "
+              + "out to bdferris@google.com and let's see if we can get this fixed.");
+    }
+    TransportCompany company = companies.iterator().next();
+    return getAgencyForTransportCompany(company);
+  }
+
+  public Agency getAgencyForTransportCompany(TransportCompany company) {
+    String agencyId = Long.toString(company.getId().getId());
+    Agency agency = _out.getAgencyForId(agencyId);
+    if (agency == null) {
+      agency = new Agency();
+      agency.setId(agencyId);
+      agency.setName(company.getName());
+      agency.setTimezone(_tz.getID());
+      agency.setUrl("https://github.com/OneBusAway/onebusaway-vdv-modules");
+      agency.setLang("de");
+      _out.saveEntity(agency);
+    }
+    return agency;
   }
 
   public AgencyAndId createCalendarEntriesForDayType(DayType dayType) {

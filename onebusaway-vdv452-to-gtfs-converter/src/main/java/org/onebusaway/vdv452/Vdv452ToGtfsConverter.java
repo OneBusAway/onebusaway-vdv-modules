@@ -26,6 +26,7 @@ import org.onebusaway.vdv452.model.DayType;
 import org.onebusaway.vdv452.model.Journey;
 import org.onebusaway.vdv452.model.Line;
 import org.onebusaway.vdv452.model.StopPoint;
+import org.onebusaway.vdv452.model.TransportCompany;
 
 public class Vdv452ToGtfsConverter {
 
@@ -33,7 +34,7 @@ public class Vdv452ToGtfsConverter {
 
   private File _outputPath;
 
-  private TimeZone _tz = TimeZone.getTimeZone("CET");
+  private TimeZone _tz = TimeZone.getTimeZone("Europe/Berlin");
 
   public void setInputPath(File inputPath) {
     _inputPath = inputPath;
@@ -63,6 +64,9 @@ public class Vdv452ToGtfsConverter {
 
   private void convert(Vdv452Dao in, GtfsMutableRelationalDao out) {
     Vdv452ToGtfsFactory factory = new Vdv452ToGtfsFactory(in, out, _tz);
+    for (TransportCompany company : in.getAllTransportCompanies()) {
+      factory.getAgencyForTransportCompany(company);
+    }
     for (StopPoint stop : in.getAllStopPoints()) {
       factory.getStopForStopPoint(stop);
     }
