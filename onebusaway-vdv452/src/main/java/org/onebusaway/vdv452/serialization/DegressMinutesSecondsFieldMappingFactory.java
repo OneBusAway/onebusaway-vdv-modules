@@ -33,55 +33,59 @@ import org.onebusaway.vdv452.model.ServiceDate;
 
 public class DegressMinutesSecondsFieldMappingFactory implements FieldMappingFactory {
 
-  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      Class<?> entityType, String csvFieldName, String objFieldName,
-      Class<?> objFieldType, boolean required) {
+  @Override
+public FieldMapping createFieldMapping(final EntitySchemaFactory schemaFactory,
+      final Class<?> entityType, final String csvFieldName, final String objFieldName,
+      final Class<?> objFieldType, final boolean required) {
     return new Impl(entityType, csvFieldName, objFieldName, required);
   }
-  
+
   private static class Impl extends AbstractFieldMapping implements Converter {
-    
+
     private static final Pattern FORMAT = Pattern.compile("^(-{0,1}\\d{2,3})(\\d{2})(\\d{2})(\\d{3})$");
 
-    public Impl(Class<?> entityType, String csvFieldName, String objFieldName,
-        boolean required) {
+    public Impl(final Class<?> entityType, final String csvFieldName, final String objFieldName,
+        final boolean required) {
       super(entityType, csvFieldName, objFieldName, required);
     }
 
-    public void translateFromCSVToObject(CsvEntityContext context,
-        Map<String, Object> csvValues, BeanWrapper object) {
+    @Override
+	public void translateFromCSVToObject(final CsvEntityContext context,
+        final Map<String, Object> csvValues, final BeanWrapper object) {
 
-      if (isMissingAndOptional(csvValues))
-        return;
+      if (isMissingAndOptional(csvValues)) {
+		return;
+	}
 
-      String value = csvValues.get(_csvFieldName).toString();
-      Matcher matcher = FORMAT.matcher(value);
+      final String value = csvValues.get(_csvFieldName).toString();
+      final Matcher matcher = FORMAT.matcher(value);
       if (!matcher.matches()) {
         throw new ConversionException("Could not convert " + value + " to decimal degrees");
       }
-      int degrees = Integer.parseInt(matcher.group(1));
-      int minutes = Integer.parseInt(matcher.group(2));
-      double seconds = Integer.parseInt(matcher.group(3))
-          + Integer.parseInt(matcher.group(4)) / 1000;
-      double decimalDegrees = degrees + (minutes / 60.0) + (seconds / 3600);
+      final int degrees = Integer.parseInt(matcher.group(1));
+      final int minutes = Integer.parseInt(matcher.group(2));
+      final double seconds = Integer.parseInt(matcher.group(3))
+          + Integer.parseInt(matcher.group(4)) / 1000.0d;
+      final double decimalDegrees = degrees + (minutes / 60.0) + (seconds / 3600);
       object.setPropertyValue(_objFieldName, decimalDegrees);
     }
 
-    public void translateFromObjectToCSV(CsvEntityContext context,
-        BeanWrapper object, Map<String, Object> csvValues) {
+    @Override
+	public void translateFromObjectToCSV(final CsvEntityContext context,
+        final BeanWrapper object, final Map<String, Object> csvValues) {
 
-      ServiceDate date = (ServiceDate) object.getPropertyValue(_objFieldName);
-      String value = date.getAsString();
+      final ServiceDate date = (ServiceDate) object.getPropertyValue(_objFieldName);
+      final String value = date.getAsString();
       csvValues.put(_csvFieldName, value);
     }
 
     @Override
-    public Object convert(@SuppressWarnings("rawtypes")
-    Class type, Object value) {
+    public Object convert(@SuppressWarnings("rawtypes") final
+    Class type, final Object value) {
       if (type == ServiceDate.class) {
         try {
           return ServiceDate.parseString(value.toString());
-        } catch (ParseException ex) {
+        } catch (final ParseException ex) {
           throw new InvalidValueEntityException(_entityType, _csvFieldName,
               value.toString());
         }
