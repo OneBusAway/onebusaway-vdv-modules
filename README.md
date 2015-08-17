@@ -1,4 +1,4 @@
-onebusaway-vdv-modules
+onebusaway-vdv-modules [![Build Status](https://travis-ci.org/OneBusAway/onebusaway-vdv-modules.svg?branch=master)](https://travis-ci.org/OneBusAway/onebusaway-vdv-modules)
 ======================
 
 Libraries and tools for working with transit data conforming to the VDV specification.  Includes:
