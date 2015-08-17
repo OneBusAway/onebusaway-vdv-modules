@@ -62,7 +62,7 @@ public class DegressMinutesSecondsFieldMappingFactory implements FieldMappingFac
       int degrees = Integer.parseInt(matcher.group(1));
       int minutes = Integer.parseInt(matcher.group(2));
       double seconds = Integer.parseInt(matcher.group(3))
-          + Integer.parseInt(matcher.group(4)) / 1000;
+          + Integer.parseInt(matcher.group(4)) / 1000.0d;
       double decimalDegrees = degrees + (minutes / 60.0) + (seconds / 3600);
       object.setPropertyValue(_objFieldName, decimalDegrees);
     }
