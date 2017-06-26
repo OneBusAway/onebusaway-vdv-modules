@@ -36,18 +36,7 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary;
 import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary.ServiceCalendarSummary;
-import org.onebusaway.vdv452.model.DayType;
-import org.onebusaway.vdv452.model.Journey;
-import org.onebusaway.vdv452.model.Line;
-import org.onebusaway.vdv452.model.LineId;
-import org.onebusaway.vdv452.model.Period;
-import org.onebusaway.vdv452.model.RouteSequence;
-import org.onebusaway.vdv452.model.StopId;
-import org.onebusaway.vdv452.model.StopPoint;
-import org.onebusaway.vdv452.model.TransportCompany;
-import org.onebusaway.vdv452.model.TravelTime;
-import org.onebusaway.vdv452.model.VersionedId;
-import org.onebusaway.vdv452.model.WaitTime;
+import org.onebusaway.vdv452.model.*;
 
 public class Vdv452ToGtfsFactory {
 
@@ -174,6 +163,9 @@ public class Vdv452ToGtfsFactory {
       if (vdvStop == null) {
         throw new IllegalStateException("unknown stop: " + stopId);
       }
+      if (vdvStop.getId().getType() == EStopType.SKIP) {
+        return null;
+      }
       gtfsStop.setName(vdvStop.getName());
       gtfsStop.setLat(vdvStop.getLat());
       gtfsStop.setLon(vdvStop.getLng());
@@ -193,7 +185,11 @@ public class Vdv452ToGtfsFactory {
       RouteSequence entry = sequence.get(i);
       StopTime stopTime = new StopTime();
       stopTime.setTrip(trip);
-      stopTime.setStop(getStopForStopPoint(entry.getStop()));
+      Stop stopForStopPoint = getStopForStopPoint(entry.getStop());
+      if (stopForStopPoint == null) {
+        return;
+      }
+      stopTime.setStop(stopForStopPoint);
       stopTime.setStopSequence(i);
       stopTime.setArrivalTime(currentTime);
       WaitTime waitTime = waitTimes.get(i);

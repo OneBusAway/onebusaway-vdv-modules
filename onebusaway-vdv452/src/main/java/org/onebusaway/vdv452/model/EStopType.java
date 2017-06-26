@@ -16,7 +16,7 @@
 package org.onebusaway.vdv452.model;
 
 public enum EStopType {
-  STOP, DEPOT;
+  STOP, DEPOT, SKIP;
 
   public static EStopType parseFieldValue(String value) {
     if (value.equals("1")) {
@@ -24,7 +24,7 @@ public enum EStopType {
     } else if (value.equals("2")) {
       return DEPOT;
     } else {
-      throw new IllegalArgumentException("unknown stop type value: " + value);
+      return SKIP;
     }
   }
 }
