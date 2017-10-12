@@ -10,7 +10,7 @@ Libraries and tools for working with transit data conforming to the VDV specific
 
 To convert transit schedule data in the VDV-452 format into GTFS, use the our handy utility.
 
-[Download the latest version of onebusaway-vdv452-converter-cli](http://nexus.onebusaway.org/service/local/artifact/maven/redirect?r=public&g=org.onebusaway&a=onebusaway-vdv452-to-gtfs-converter-cli&v=LATEST)
+[Download the latest version of onebusaway-vdv452-converter-cli](http://nexus.onebusaway.org/service/local/artifact/maven/content?r=public&g=org.onebusaway&a=onebusaway-vdv452-to-gtfs-converter-cli&v=LATEST)
 
 The utility is a executable Java jar file, so you'll need Java installed to run the tool.  To run it:
 
