@@ -1,4 +1,4 @@
-onebusaway-vdv-modules [![Build Status](https://travis-ci.org/OneBusAway/onebusaway-vdv-modules.svg?branch=master)](https://travis-ci.org/OneBusAway/onebusaway-vdv-modules)
+onebusaway-vdv-modules [![Java CI with Maven](https://github.com/OneBusAway/onebusaway-vdv-modules/actions/workflows/maven.yml/badge.svg)](https://github.com/OneBusAway/onebusaway-vdv-modules/actions/workflows/maven.yml)
 ======================
 
 Libraries and tools for working with transit data conforming to the VDV specification.  Includes:
