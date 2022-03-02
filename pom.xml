@@ -16,16 +16,40 @@
   <url>https://github.com/OneBusAway/onebusaway-vd-modules/wiki/</url>
 
   <repositories>
+    <repository> <!-- please remove once posted to repo.camsys-apps.com -->
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
     <repository>
-      <id>public.onebusaway.org</id>
-      <url>http://nexus.onebusaway.org/content/groups/public/</url>
+      <id>repo.camsys-apps.com</id>
+      <url>https://repo.camsys-apps.com/third-party/</url>
+    </repository>
+    <repository>
+      <id>releases-camsys-public-repo</id>
+      <url>https://repo.camsys-apps.com/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>snapshots-camsys-public-repo</id>
+      <url>https://repo.camsys-apps.com/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
   <scm>
     <connection>scm:git:http://github.com/OneBusAway/onebusaway-vdv-modules.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/OneBusAway/onebusaway-vdv-modules.git</developerConnection>
-    <url>http://github.com/OneBusAway/onebusaway-vdv-modules</url>
+    <url>https://github.com/OneBusAway/onebusaway-vdv-modules</url>
   </scm>
 
   <issueManagement>
